@@ -95,7 +95,7 @@ db.test.find({
 }).sort({ "name.firstName": 1 });
 ```
 
-But, in above same this code, we can write using `$in` query in less code.
+But, above same this code, we can write using `$in` query in less code.
 instead of using logical` $or` query. 
 
 ```javaScript
@@ -110,3 +110,34 @@ db.test.find({
     skills: 1
 })
 ```
+
+When <boolean> is true, 
+`$exists`` matches the documents that contain the field, including documents where the field value is null.
+If <boolean> is false, the query returns only the documents that do not contain the field.
+
+With `$exsits` Element query operator we are checking if the field is exsits in the data or not,
+It doesn't checks weather data is `null` or `undefined`. If it's there we can have the document.
+
+```javaScript
+db.test.find({ age: { $exists: false } }).project({ age: 1, name: 1 }).sort({ age: 1 })
+```
+
+The query `type` will match documents where the field value is given type. 
+The types specified in the `type` element query can be either numeric or string aliases.
+
+`type` will filter out weather any of the company field value is type null or given type.
+
+```javaScript
+db.test.find({company: {$type: "null"}})
+
+```
+
+when we want to filter out an array with an specified numbers of elements.
+Suppose, we want to find out all array which are have 5 elements. 
+In this case, we'll use `$size` array query operator.
+
+```javaScript
+db.test.find({ friends: { $size: 5 } }).project({ friends: 1 });
+```
+
+
