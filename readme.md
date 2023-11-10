@@ -1,40 +1,61 @@
-# Documentaion of be a Mongoosh-Master. 
+### Documentaion of be a Mongoosh-Master. 
 
-// db.test.findOne({ name: { firstName: "Candy" } })
-// Fiels filtering with {}. 
-// db.test.find({ gender: "Male"}, {email: 1, name: 1, phone: 1}); 
+ db.test.findOne({ name: { firstName: "Candy" } })
 
-// Fiedls filtering with project.
-// db.test.find({gender: "Female"}).project({name: 1, email: 1, phone: 1});
+// Fiedls filtering with {}. we want to watch only these filed of feild "malel" `{email: 1, name: 1, phone: 1}`
 
-// Operator $eq Field is equal to a value.
+```javaScript
+db.test.find({ gender: "Male"}, {email: 1, name: 1, phone: 1});
+```
+ 
+Fiedls filtering with project.
 
-// db.test.find({birthday : {$eq: "3/13/2022"}});
+```javaScript
+db.test.find({gender: "Female"}).project({name: 1, email: 1, phone: 1});
+```
+Operator `$eq`. find out if birthday field is equal to `"3/13/2022"` this value.
 
-// Not equal $ne 
-// db.test.find({ age: { $ne: 12 } });
+```javaScript
+db.test.find({birthday : {$eq: "3/13/2022"}});
+```
 
-//Getter than $gt. 
-// db.test.find({ age: { $gt: 30 } })
+Not equal `$ne`. Find all age which are not equal to age 12. 
+`$ne` will finter our all data which's age field value is not equal to 12 
 
-// getter than or equal to. $gte 
+```javaScript
+db.test.find({ age: { $ne: 12 } });
+```
 
-// db.test.find({ age: { $gte: 30 } }).sort({ age: 1 });
+Grater than `$gt`. Finds out all age fields value whcih are grater than 30.
 
-// less than or equal to. $gte 
+```javaScript
+db.test.find({ age: { $gt: 30 } });
+```
+
+greater than or equal to.` $gte`. Finds out all the age field value which are greater than or equal to 30
+
+```js
+ db.test.find({ age: { $gte: 30 } }).sort({ age: 1 });
+```
+
+// less than or equal to. `$lte`. Finds out all the age field value which are less than or equal to 30.
+
+```js
+ db.test.find({ age: { $lte: 30 } }).sort({ age: 1 });
+```
 
 
  From the test database if age fiels data is getter than or equal to 18 and less than or equal to 30, and gender field should be female,  `{age: 1, gender: 1, name: 1}` this field is called field filtering by this we want to see age, and gender fields data only not everything.
 
- `.sort({ gender: 1 }` this code desents by gender means  `18, 19, 20... son on`
+ `.sort({ gender: 1 }` this code asends by gender means  `18, 19, 20... son on`
 
 ```javaScript
  db.test.find({age : {$gte: 18, $lte: 30}, gender: "Female"}, {age: 1, gender: 1, name: 1}).sort({ gender: 1 });
 ```
 
-//If an age matched from the array `$in` will filters out it.
-//`$nin` - not in will make sure 17, 20, 21, 35 these are not in the array.
-//`interests: {$in: ["Cooking", "Gaming"]}` interests field should have `cooking` or `gaming`.
+If an age matched from the array `$in` will filters out it.
+`$nin` - not in will make sure 17, 20, 21, 35 these are not in the array.
+`interests: {$in: ["Cooking", "Gaming"]}` interests field should have `cooking` or `gaming`.
 
 ```javaScript
 db.test.find({
