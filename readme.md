@@ -233,3 +233,42 @@ db.test.find({
 }).project({ skills: 1 })
 ```
 Yes, Now, it's giving me all documents where javascriptis intermidate value.
+
+
+Update every this using `$set` operator. It'll will replace everything and adds new value.
+It's used when updatinig primitive data type. When we need to replace a non-primitive data type we can use `$set` operator.
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
+    {
+        $set:
+        {
+            interests: "Gaming" //It'll change the whole array ["Gaming", "writing", "Cooking"] to "Gaming".
+        }
+    })
+```
+
+When our requiremnet is to not change but add something to it. we'll use `$addToSet`: operator. 
+It won'take duplicate entry.
+
+When we have add two value. we can use `$each` operator.
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
+    {
+        $addToSet: {
+            interests: { $each: ["Travelling", "Driving"] }
+       }
+    })
+```
+
+Adding duplicate value. we'll use `$push`
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
+    {
+        $push: {
+            interests: { $each: ["Reading", "Writing", "Cooking"] }
+        }
+    })
+```
+
