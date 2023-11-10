@@ -162,3 +162,74 @@ db.test.find({ friends: { $size: 5 } }).project({ friends: 1 });
 ```
 
 
+### `$all` array query operator.
+
+Find if an array field value is matches.
+
+```javaScript
+db.test.find({ interests: "Writing" }).project({ interests: 1 })
+```
+Find out if two field value matches. 
+
+```javaScript
+db.test.find({ interests: ["Cooking", "Writing"] }).project({ interests: 1 });
+```
+
+Although, We know that "Cooking" and "Writing" value are there but we're having an empty array here.
+because it's matches everything means index and value, mismatching in index and value will cause problem. 
+here this will return some document.
+
+```javaScript
+db.test.find({ interests: ["Cooking", "Writing", "Reading"] }).project({ interests: 1 });//Index and vallues are matched. 
+```
+
+But our requirement is we've to find out if values in there. so, we'll use `$all` array query opoerator.
+
+```javaScript
+db.test.find({ interests: { $all: ["Cooking", "Writing"] } }).project({ interests: 1 }); //Now,it's working.
+```
+
+Find find if an array field value matches.
+
+```js
+db.test.find({ "skills.name": "JAVASCRIPT" }).project({ skills: 1 });
+```
+
+
+Find out if two array field value matches. 
+
+```js
+ db.test.find({ "skills.name": "JAVASCRIPT", "skills.level": "Intermidiate" }).project({ skills: 1 });
+```
+It's not working it's giving me all "level": "Expert" values also. 
+
+My requirement is to find out if the level value is intermidate. let's try is another way.
+```js
+db.test.find({
+    skills: {
+        name: "JAVASCRIPT",
+        level: "Intermidiate",
+        // isLearning: false
+    }
+}).project({skills: 1})
+```
+ Returning an empty array. That means its's also checks if every field is matched and order of the field.
+ when I add `isLearing: true` it's works. 
+
+
+
+But our requirement is to find out if two field value or one field value matches,
+No matter what is the order. 
+To do so, we'll use `$elemMatch` match operator.
+
+```js
+db.test.find({
+    skills: {
+        $elemMatch: {
+            name: "JAVASCRIPT",
+            level: "Intermidiate"
+        }
+    }
+}).project({ skills: 1 })
+```
+Yes, Now, it's giving me all documents where javascriptis intermidate value.
