@@ -45,3 +45,68 @@ db.test.find({
 { age: 1, gender: 1, name: 1, interests: 1 }).
 sort({ gender: 1 });
 ```
+
+//Implicit `$and:` When we want to filter data by just one field, with two condition.
+
+```javaScript
+db.test.find({
+    gender: "Female",
+    age: { $gte: 18, $lte: 35 }
+}).project(
+    { age: 1, gender: 1 }
+).sort(
+    { age: -1 } //Desending order. 
+)
+```
+
+When we want to add same field twice, It'll show an `Error: 'Duplicate identifier "age"'.`  
+
+To solve this problem we can use Explicit $end query method. 
+
+With this method we  have to write a logical query first,
+`$and` after in the` [third bracket]` we can have same field field multiple time.
+using `$and` means every query must be satisfied to be filterd out.
+
+
+```javaScript
+db.test.find({
+    $and: [
+        { gender: "Female" },
+        { age: { $gt: 18 } },
+        { age: { $lt: 34 } }
+    ]
+}).project({
+    age: 1,
+    gender: 1
+}).sort({ age: 1 })
+```
+When we have a requirement that if a query is satisfied we'll filter out that data. 
+In this case, explicit `$or` would be a perfect query.
+
+```javaScript
+db.test.find({
+    $or: [
+        { "skills.name": "JAVASCRIPT" },
+        { "skills.name": "PYTHON" }
+    ]
+}).project({
+    skills: 1,
+    "name.firstName": 1
+}).sort({ "name.firstName": 1 });
+```
+
+But, in above same this code, we can write using `$in` query in less code.
+instead of using logical` $or` query. 
+
+```javaScript
+db.test.find({
+    "skills.name": {
+        $in: ["JAVASCRIPT", "PYTHON"]
+    }
+}).project({
+    skills: 1,
+    name: 1
+}).sort({
+    skills: 1
+})
+```
