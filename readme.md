@@ -342,3 +342,39 @@ db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069"), "education.degree
     { $set: { "education.$.major": "Physics", "education.year": 2005 } }
 )
 ```
+
+Increment a value.
+
+```js
+db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000069")}, {
+    $inc: {
+        age: 2
+    }
+})
+```
+
+Delete a document from collection.
+
+```javaScript
+db.test.deleteOne({ _id: ObjectId("6406ad63fc13ae5a40000069") });
+```
+
+
+Make a collection.
+
+```javaScript
+db.createCollection("posts");
+```
+
+
+Insert in posts collection.
+
+```js
+db.posts.insertOne({ test: "Just Testing" });
+```
+
+
+Delete collection.
+```javaScript
+db.posts.drop()
+```
