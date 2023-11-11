@@ -272,3 +272,42 @@ db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
     })
 ```
 
+To remove something from the data we'll use `$unset` operator. 
+It'll remove the whole field. 
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
+    { $unset: { age: 80 } })
+
+```
+
+The $pop operator removes the first or last element of an array. Pass $pop
+a value of - 1 to remove the first element of an array and 1 to remove the last element in an array.
+
+When removing a value from an array, we can use `$pop` method, using `$pop`:
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") }, {
+    $pop: { friends: -1 }
+});
+```
+
+
+The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
+
+Remove one or multiple values from an array.
+
+Remove one.
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") }, {
+    $pull: { friends: "Mir Hussain" }
+})
+```
+
+Remove multiple.
+```javaScript
+db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000069")}, {
+    $pullAll: {friends:[ "Abdur Rakib", "Najmus Sakib" ]}
+})
+
+```
