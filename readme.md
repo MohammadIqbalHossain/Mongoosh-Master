@@ -311,3 +311,34 @@ db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000069")}, {
 })
 
 ```
+
+More from `$set` method.
+
+Set or update an objects data by `$set` method.
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") }, {
+    $set: {
+        "address.city": "dhaka",
+        "address.country": "Bangladesh",
+        "address.postalCode": "0343"
+    }
+})
+```
+
+
+Set or update array of object data using `$set` method.
+
+```javaScript
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069"), "education.degree": "Master of Science" },
+    { $set: { "education.$.major": "Physics" } }
+)
+```
+
+Set or update multiple data from an array of objects.
+
+```js
+db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069"), "education.degree": "Master of Science" },
+    { $set: { "education.$.major": "Physics", "education.year": 2005 } }
+)
+```
