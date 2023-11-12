@@ -45,7 +45,7 @@ greater than or equal to.` $gte`. Finds out all the age field value which are gr
 ```
 
 
- From the test database if age fiels data is getter than or equal to 18 and less than or equal to 30, and gender field should be female,  `{age: 1, gender: 1, name: 1}` this field is called field filtering by this we want to see age, and gender fields data only not everything.
+ From the test database if age field's data is greater than or equal to 18 and less than or equal to 30, and gender field should be female,  `{age: 1, gender: 1, name: 1}` this field is called field filtering by this we want to see age, and gender fields data only, not everything.
 
  `.sort({ gender: 1 }` this code asends by gender means  `18, 19, 20... son on`
 
@@ -85,7 +85,7 @@ When we want to add same field twice, It'll show an `Error: 'Duplicate identifie
 To solve this problem we can use Explicit $end query method. 
 
 With this method we  have to write a logical query first,
-`$and` after in the` [third bracket]` we can have same field field multiple time.
+`$and` after in the` [third bracket]` we can have same field multiple time.
 using `$and` means every query must be satisfied to be filterd out.
 
 
