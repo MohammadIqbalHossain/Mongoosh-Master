@@ -378,3 +378,35 @@ Delete collection.
 ```javaScript
 db.posts.drop()
 ```
+
+## MongoDB Aggregation.
+
+ a way of processing a large number of documents in a collection by means of passing them through different stages. The stages make up what is known as a pipeline. The stages in a pipeline can filter, sort, group, reshape and modify documents that pass through the pipeline.
+
+
+
+Processing data by runing them through diffrent stages.
+
+Video - 1: Learn about data processing processes, and `$match` is a field is stage- 1 operation to find data. and `$project` is stage-2 for displaying data.  
+
+```javaScript
+
+db.test.aggregate([
+    {
+        //stage- 2. 
+        //Find the documents on which we want to work or do aggrefation.
+        $match: {
+            gender: 'Male',
+            age: { $gt: 30 }
+        }
+    },
+    {
+        //Stage- 2
+        //Show the output. 
+        $project: {
+            age: 1,
+            name: 1
+        }
+    }
+])
+```
