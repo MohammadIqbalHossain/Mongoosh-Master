@@ -651,3 +651,25 @@ db.test.aggregate([
 2. Get toal, average, minimum, and maximum salary. 
 3. Change a field name by referencing before stage field name.
 4. calculate in project stage. 
+
+
+Video-5: `$unwind` 
+Our requirment is to find out common interest based on their age. When we're trying to make group based on interest field we're getting duplicate documents or on group for each documents. Now, What we've to do is based on every interest value in the array. Then we'll group all document by different age. 
+
+We can break interest array using `$unwind`, What unwind does is, it's gives a documnet for every value in the array. 
+
+
+```js
+db.test.aggregate([
+    //Breaks the whole collection, gives a document for each array value.
+    { $unwind: '$interests' },
+    
+    //Group based on age. Push method takes interest's field value from unwinded group and stores it in interestPerAge array.
+    {$group: { _id: '$age', interestPerAge: {$push: '$interests'}}}
+])
+
+```
+
+1. Break the collection with `$unwind` based on each `interest` array value.
+2. Group by age. 
+2. store evey interests field value in interestPerAge array.  
