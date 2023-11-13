@@ -608,3 +608,46 @@ db.test.aggregate([
 
 ```
 
+Video-4: More about `$group`:
+
+We've got a requiremnet that we need to get a sum for salary field values, avarage, min and max range for this value. 
+To do so, we need to make a single group for all collaction documents. If we add reference _id is null it'll take all data in a single group. and we can get salary field from there.  
+
+
+
+
+```js 
+
+db.test.aggregate([
+    {
+        //Stage-1: make group based on field reference.
+        $group: {
+            //Takes all collection data in a single group. Because we're grouping based on null. 
+            _id: null,
+            //Adds every documents salary fields value.
+            totalSalary: { $sum: '$salary' },
+            //Calculate average salray.
+            averageSalary: { $avg: '$salary' },
+            //Finds out Minimum salary.
+            minSalary: { $min: '$salary' },
+            //Finds out maximum salary.
+            maxSalary: { $max: '$salary' }
+        }
+    },
+    {
+        $project: {
+            toalSalary: 1,
+            averageSalary: 1,
+            minSalary: 1,
+            maximumSalary: '$maxSalary', //Referencing a value to change field name.
+            //Calculation in project stage. Substraction. 
+            rangeBetweenMinMax: { $subtract: ['$maxSalary', '$minSalary'] }
+        }
+    }
+])
+```
+
+1. Take full collectin in a single group.
+2. Get toal, average, minimum, and maximum salary. 
+3. Change a field name by referencing before stage field name.
+4. calculate in project stage. 
