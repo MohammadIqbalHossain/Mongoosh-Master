@@ -718,3 +718,70 @@ db.test.aggregate([
     }
 ])
 ```
+
+
+video-7: 
+
+`$facet` When we have generate multiple output based on same data. Generally we would use multiple aggregation, but instead of writing multiple aggregation we can use `$facet` method. 
+
+using `$facet` we can write multiple pipline those generates different summary in a same aggregatin it's strengthens aggregation.
+
+```js
+
+db.test.aggregate([
+//`$facet` is used for make multi pipeline in a single data. 
+// Every pineline generates special indivitual summary. Means one is not depdent to another. 
+// When we have to generate multiple summary in single data we can use `$facet`.
+    {
+        $facet: {
+            // Pipeline-1
+            'friendsCount': [
+                // stage-1
+                { $unwind: "$friends" },
+                //stage-2
+                { $group: { _id: '$friends', count: { $sum: 1 } } }
+            ],
+            //Pipeline-2
+            'interestCount': [
+                //stage-1
+                { $unwind: "$interests" },
+                //stage-2
+                { $group: { _id: '$interests', count: { $sum: 1 } } }
+            ],
+            //Pipeline-3
+            'skillsCount': [
+                //stage-1
+                { $unwind: '$skills' },
+                //stage-2
+                { $group: { _id: "$skills", count: { $sum: 1 } } }
+            ]
+        }
+    }
+])
+```
+
+Video-8: Embed vs referencing. 
+
+Embed : Suppose we've a users collection and our website has a orders system. when a user orders a product, where do I add the product. there is two way, One: add them with users objects child as an array or objects. This method is called Embedding. 
+
+Refrencing: When we make a new collection for orders and it's stores product id and users id in for each product order. 
+Then we've to find out which user orderd a specified product. we can find orders and users by `$loopup` method. 
+
+Here's an example: 
+
+```js 
+db.orders.aggregate([
+    {
+        $lookup: {
+            //From which collection we want to get user?
+            from: "test",
+            //What is the users id that stored when user placed the order. 
+            localField: "userId",
+            //What is the userId's field name on test collection?
+            foreignField: "_id",
+            //What will be the name of new objects name that combines user and it's orders. 
+            as: "user"
+        }
+    }
+])
+```
