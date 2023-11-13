@@ -673,3 +673,48 @@ db.test.aggregate([
 1. Break the collection with `$unwind` based on each `interest` array value.
 2. Group by age. 
 2. store evey interests field value in interestPerAge array.  
+
+Video-6: 
+
+
+MongoDB defination: Categorizes incoming documents into groups, called buckets, based on a specified expression and bucket boundaries and outputs a document per each bucket. Each output document contains an _id field whose value specifies the inclusive lower bound of the bucket. The output option specifies the fields included in each output document.
+
+$bucket only produces output documents for buckets that contain at least one input document.
+
+
+My Understanding:
+Bucket means group by some boundaries, and see their results. also limit groups, sort. 
+
+
+```js
+db.test.aggregate([
+    //stage-1: 
+    //groupBy: Reference field which value will use to make group. 
+    //boundaries: make some boundaries to split documnets in different 
+    //groups. Default: All remaining document will store in default group, it's literal name.
+    //output: what we want to see or get from these groups.
+    {
+        $bucket: {
+            groupBy: '$age',
+            boundaries: [20, 40, 60, 80],
+            default: 'Others',
+            output: {
+                count: {$sum: 1},
+                name: {$push: '$$ROOT'}
+            }
+        }
+    },
+    //stage-2: Sort documents in asending or desending order.  
+    {
+        $sort: {age: -1} //desending.
+    },
+    //stage-3: Limit outputs.
+    {
+        $limit: 2
+    },
+    //stage-4: Filter out what documents data we want to see or get.
+    {
+        $project: {count: 1} //See how much data we've in each group. 
+    }
+])
+```
