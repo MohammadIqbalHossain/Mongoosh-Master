@@ -499,7 +499,112 @@ db.test.aggregate([
 ```
 Above this aggregation will merge data only with those whose age is greater than 30 and gender is male. it'll merge only added fields because of project stage. To prevent this remove first stage and third stage. 
 
+Video-3: `$group`
+
+MongoDB Defination: The $group stage separates documents into groups according to a "group key". The output is one document for each unique group key.
+
+A group key is often a field, or group of fields. The group key can also be the result of an expression. Use the _id field in the $group pipeline stage to set the group key. See below for
+
+My understanding: Let's understand it with a scenario, suppose our collection is about movies, we know that there is different genres in movies, We want to make a group for each all of each genra movies. We've movies in these genres such as : 
+
+1. Philosopical Drama.
+2. Pshyclogical Thriller.
+3. Horror Thriller.
+4. Action.
+5. Dystopian. 
+6. Drama.
+7. Biography. 
+
+Each genre has different sum of movies. Now, With the group stage we'll make a group for all philosophical Drama movies and so on...
+
+We can count sum of the documents in every group with `$sum` operation.  Along with that we can operate all these in the group stage: 
+
+Operator	Meaning
+$count	Calculates the quantity of documents in the given group.
+$max	Displays the maximum value of a document’s field in the collection.
+$min	Displays the minimum value of a document’s field in the collection.
+$avg	Displays the average value of a document’s field in the collection.
+$sum	Sums up the specified values of all documents in the collection.
+$push	Adds extra values into the array of the resulting document.
+
+Syntax: {$group: {'_id': 'genres', count: {$sum: 1}}}
 
 
 
+```js
+//In the `$group` stage we're refecencing $age as _id means that we've to make different groups based on same age. 
+//Then we're adding a docsCount field to it, and it's with `$sum` operator it's counts how much documents each group has. 
+db.test.aggregate([
+    //stage-1: Make groups of collection based on a documents field reference.
+    { $group: { '_id': '$age', docsCount: { $sum: 1 } } }
+])
+```
+
+`$push`: When we need to see some specified fields from resulting documents, we can use `$push` operator. 
+
+As Example: 
+
+```js
+db.test.aggregate([
+    //stage-1: Make groups of collection based on a documents field reference. and display a single field 
+    { $group: { '_id': '$age', docsCount: { $sum: 1 }, displayName: {$push: '$name'} } }
+])
+```
+
+Output: 
+
+```js 
+/* 1 */
+{
+	"_id" : 53,
+	"docsCount" : 2,
+	"displayName" : [
+		{
+			"firstName" : "Sutherland",
+			"lastName" : "Learman"
+		},
+		{
+			"firstName" : "Winn",
+			"lastName" : "Lambis"
+		}
+	]
+},
+```
+
+To See all the informations from every document we can use $push: '$$ROOT'. 
+
+
+```js
+db.test.aggregate([
+    //stage-1: Make groups of collection based on a documents field reference. and get full doc for each documents
+    { $group: { '_id': '$age', docsCount: { $sum: 1 }, displayName: {$push: '$$ROOT'} } }
+])
+```
+
+Now, We'll send only name, email and phone to the frontend. So write a project stage.
+
+```js
+db.test.aggregate([
+    //stage-1: Make groups of collection based on a documents field reference.
+    {
+        $group: {
+            '_id': '$age',
+            //Counts contained documents in each groups
+            docsCount: { $sum: 1 },
+
+            fullDoc: { $push: '$$ROOT' }
+        }
+    },
+
+    //stage-2: Filter our your desired fields from all documents info from fullDoc.
+    {
+        $project: {
+            'fullDoc.name': 1,
+            'fullDoc.email': 1,
+            'fullDoc.phone': 1
+        }
+    }
+])
+
+```
 
