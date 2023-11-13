@@ -410,3 +410,96 @@ db.test.aggregate([
     }
 ])
 ```
+
+Video-2: 
+
+We can write same query multiple time, Think about that we want some document that should be gender: male and age is greater than 30. We can write both requiments `$match` operation in different stage. But It'll make it lengthy and more time constly. this is not optimized aggregation writing style. 
+
+MongoDB defination:
+`$addfields`: Adds new fields to documents. $addFields outputs documents that contain all existing fields from the input documents and newly added fields. 
+
+My understanding:
+`$addField` adds a new fields to documents. It's doesn't actually modifies the document but we can find added fields in aggregation operations or in pipeline. using `$addFields` we can add multiple field in a single stage. 
+
+```js
+db.test.aggregate([
+    // Stage-1: Find appropiate documents for aggregation.  
+    { $match: { gender: 'Male', age: { $gt: 30 } } },
+    //stage-2: Add one or multiple documents in the process of pipeline.
+    { $addFields: { course: 'Level-2', eduTech: 'Programming Hero', CEO: 'Jhankar Mahbub' } },
+    //stage-3: Display your desired documents. 
+    { $project: { course: 1, eduTech: 1, CEO: 1 } }
+])
+```
+
+Output: 
+
+```js
+{
+	"_id" : ObjectId("6406ad63fc13ae5a40000067"),
+	"course" : "Level-2",
+	"eduTech" : "Programming Hero",
+	"CEO" : "Jhankar Mahbub"
+},
+
+....
+```
+
+
+We know that our added fields are not actually adding to our original data. But think about a requirments that we've to store all ne added fields to a new collection. In this case we have to use `$out` operator. {$out: 'collection-name'}; 
+
+!Warning: `$out` stage is must be final statement.  
+
+```javaScript
+db.test.aggregate([
+    // Stage-1: Find appropiate documents for aggregation.  
+    { $match: { gender: 'Male', age: { $gt: 30 } } },
+
+    //stage-2: Add one or multiple documents in the process of pipeline.
+    { $addFields: { course: 'Level-2', eduTech: 'Programming Hero', CEO: 'Jhankar Mahbub' } },
+
+    //stage-3: Display your desired documents. 
+    { $project: { course: 1, eduTech: 1, CEO: 1 } }, //This line should not be here. 
+    
+    // stage-4: stroing added field in a new collection.  
+    { $out: 'added-fields' },
+])
+```
+
+output: 
+
+```js
+//Fields in different collection with all other documents.
+{
+	"_id" : ObjectId("6406ad65fc13ae5a400000c3"),
+	"course" : "Level-2",
+	"eduTech" : "Programming Hero",
+	"CEO" : "Jhankar Mahbub"
+},
+```
+
+Okay, Understood `$out`! Now I've got a new requirement that I need to merge our added field to an existing collection, Or current collection. Yes, we can do it with `$merge` operation.  
+
+Syntax: $merge: 'collection-name'.
+
+```js
+db.test.aggregate([
+    // Stage-2: Find appropiate documents for aggregation.  
+    { $match: { gender: 'Male', age: { $gt: 30 } } }, 
+    //stage-2: Add one or multiple documents in the process of pipeline.
+    { $addFields: { course: 'Level-2', eduTech: 'Programming Hero', CEO: 'Jhankar Mahbub' } },
+
+
+    //stage-3: Display added fields.
+    { $project: { course: 1, eduTech: 1, CEO: 1 } }, 
+
+    //stage-4 merge added fields to an existing collection. 
+    { $merge: 'test' },
+])
+```
+Above this aggregation will merge data only with those whose age is greater than 30 and gender is male. it'll merge only added fields because of project stage. To prevent this remove first stage and third stage. 
+
+
+
+
+
