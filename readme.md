@@ -786,3 +786,42 @@ db.orders.aggregate([
 ])
 ```
 
+Video-9: Indexing: searching data with some indexing mehodologies. 
+
+COLLSCAN: CALLSCAN is traditional indexing to find data. It searched page by page explicily examines evey data to find desired data.
+
+IXSCAN: When we create a index based on a field. It's create a separe index for searching data. it's time efficient. and performent. 
+
+IXHACK: It's mongoDB's default indexing. 
+
+To create our own index: 
+
+```js
+db.getCollection('massive-data').createIndex({ email: 1 });
+```
+
+
+Video-10: 
+
+Delete index: 
+
+```js 
+db.getCollection('massive-data').dropIndex({ email: 1 });
+```
+
+Compoound index. Make an index based on two different field. Suppose, we want to gender: male, less aged documnet in a sort time. Now, gender has two types of value 'female' and 'male' F comes be before M. To find male in a effieciend way we've to use desending order in first expression of compund indexing. In second expression we want to have low aged data first so it'll be asending order. 
+
+Search Index: When we want to find out if a single text is abialave in a field we can use search index.
+
+let's create search index:
+```js
+db.getCollection('massive-data').createIndex({ about: 'text' })
+```
+Check if given text value is exists in the about field. Write multiple search expression with a comma after first one.  
+
+```js
+db.getCollection('massive-data').find({$text: {$search: 'Tempor'}}
+```
+
+
+
