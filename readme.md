@@ -232,7 +232,7 @@ db.test.find({
     }
 }).project({ skills: 1 })
 ```
-Yes, Now, it's giving me all documents where javascriptis intermidate value.
+Yes, Now, it's giving me all documents where javaScript is intermidate field value.
 
 
 Update every this using `$set` operator. It'll will replace everything and adds new value.
@@ -281,7 +281,7 @@ db.test.updateOne({ _id: ObjectId("6406ad63fc13ae5a40000069") },
 
 ```
 
-The $pop operator removes the first or last element of an array. Pass $pop
+The `$pop` operator removes the first or last element of an array. Pass `$pop`
 a value of - 1 to remove the first element of an array and 1 to remove the last element in an array.
 
 When removing a value from an array, we can use `$pop` method, using `$pop`:
@@ -446,7 +446,7 @@ Output:
 ```
 
 
-We know that our added fields are not actually adding to our original data. But think about a requirments that we've to store all ne added fields to a new collection. In this case we have to use `$out` operator. {$out: 'collection-name'}; 
+We know that our added fields are not actually adding to our original data. But think about a requirments that we've to store all we added fields to a new collection. In this case we have to use `$out` operator. {$out: 'collection-name'}; 
 
 !Warning: `$out` stage is must be final statement.  
 
